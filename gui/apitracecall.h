@@ -13,6 +13,9 @@
 
 class ApiTrace;
 class TraceLoader;
+class ApiSignaturesManager;
+
+extern ApiSignaturesManager SigManager;
 
 class VariantVisitor : public trace::Visitor
 {

@@ -11,6 +11,8 @@
 #include <QStringBuilder>
 #include <QTextDocument>
 
+ApiSignaturesManager SigManager;
+
 const char * const styleSheet =
     ".call {\n"
     "    font-weight:bold;\n"
@@ -188,14 +190,10 @@ void VariantVisitor::visit(trace::Enum *e)
 {
     ApiTraceEnumSignature *sig = 0;
 
-    if (m_loader) {
-        sig = m_loader->enumSignature(e->sig->id);
-    }
+    sig = SigManager.enumSignature(e->sig->id);
     if (!sig) {
         sig = new ApiTraceEnumSignature(e->sig);
-        if (m_loader) {
-            m_loader->addEnumSignature(e->sig->id, sig);
-        }
+        SigManager.addEnumSignature(e->sig->id, sig);
     }
 
     m_variant = QVariant::fromValue(ApiEnum(sig, e->value));
@@ -667,7 +665,7 @@ ApiTraceCall::ApiTraceCall(ApiTraceFrame *parentFrame,
 {
     m_index = call->no;
 
-    m_signature = loader->signature(call->sig->id);
+    m_signature = SigManager.signature(call->sig->id);
 
     if (!m_signature) {
         QString name = QString::fromStdString(call->sig->name);
@@ -677,7 +675,7 @@ ApiTraceCall::ApiTraceCall(ApiTraceFrame *parentFrame,
             argNames += QString::fromStdString(call->sig->arg_names[i]);
         }
         m_signature = new ApiTraceCallSignature(name, argNames);
-        loader->addSignature(call->sig->id, m_signature);
+        SigManager.addSignature(call->sig->id, m_signature);
     }
     if (call->ret) {
         VariantVisitor retVisitor(loader);

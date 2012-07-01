@@ -27,8 +27,24 @@ TraceLoader::TraceLoader(QObject *parent)
 TraceLoader::~TraceLoader()
 {
     m_parser.close();
+}
+
+ApiSignaturesManager::ApiSignaturesManager()
+{
+    clear();
+}
+
+ApiSignaturesManager::~ApiSignaturesManager()
+{
+    clear();
+}
+
+void ApiSignaturesManager::clear()
+{
     qDeleteAll(m_signatures);
     qDeleteAll(m_enumSignatures);
+    m_signatures.clear();
+    m_enumSignatures.clear();
 }
 
 void TraceLoader::loadTrace(const QString &filename)
@@ -38,10 +54,7 @@ void TraceLoader::loadTrace(const QString &filename)
     }
 
     if (!m_frameBookmarks.isEmpty()) {
-        qDeleteAll(m_signatures);
-        qDeleteAll(m_enumSignatures);
-        m_signatures.clear();
-        m_enumSignatures.clear();
+        SigManager.clear();
         m_frameBookmarks.clear();
         m_createdFrames.clear();
         m_parser.close();
@@ -224,7 +237,7 @@ void TraceLoader::parseTrace()
 }
 
 
-ApiTraceCallSignature * TraceLoader::signature(unsigned id)
+ApiTraceCallSignature * ApiSignaturesManager::signature(unsigned id)
 {
     if (id >= m_signatures.count()) {
         m_signatures.resize(id + 1);
@@ -234,12 +247,12 @@ ApiTraceCallSignature * TraceLoader::signature(unsigned id)
     }
 }
 
-void TraceLoader::addSignature(unsigned id, ApiTraceCallSignature *signature)
+void ApiSignaturesManager::addSignature(unsigned id, ApiTraceCallSignature *signature)
 {
     m_signatures[id] = signature;
 }
 
-ApiTraceEnumSignature * TraceLoader::enumSignature(unsigned id)
+ApiTraceEnumSignature * ApiSignaturesManager::enumSignature(unsigned id)
 {
     if (id >= m_enumSignatures.count()) {
         m_enumSignatures.resize(id + 1);
@@ -249,7 +262,7 @@ ApiTraceEnumSignature * TraceLoader::enumSignature(unsigned id)
     }
 }
 
-void TraceLoader::addEnumSignature(unsigned id, ApiTraceEnumSignature *signature)
+void ApiSignaturesManager::addEnumSignature(unsigned id, ApiTraceEnumSignature *signature)
 {
     m_enumSignatures[id] = signature;
 }
