@@ -63,6 +63,9 @@ ApiTrace::ApiTrace()
     m_loaderThread = new QThread();
     m_loader->moveToThread(m_loaderThread);
     m_loaderThread->start();
+
+    m_signatures.clear();
+    m_enumSignatures.clear();
 }
 
 ApiTrace::~ApiTrace()
@@ -70,8 +73,24 @@ ApiTrace::~ApiTrace()
     m_loaderThread->quit();
     m_loaderThread->deleteLater();
     qDeleteAll(m_frames);
+
+    qDeleteAll(m_signatures);
+    qDeleteAll(m_enumSignatures);
+    m_signatures.clear();
+    m_enumSignatures.clear();
+
     delete m_loader;
     delete m_saver;
+}
+
+ApiTrace* ApiTrace::instance = NULL;
+ApiTrace* ApiTrace::getInstance()
+{
+	if(!instance)
+	{
+		instance = new ApiTrace();
+	}
+	return instance;
 }
 
 bool ApiTrace::isEmpty() const
@@ -496,6 +515,36 @@ void ApiTrace::bindThumbnailsToFrames(const QList<QImage> &thumbnails)
             emit changed(frame);
         }
     }
+}
+
+ApiTraceCallSignature * ApiTrace::signature(unsigned id)
+{
+    if (id >= m_signatures.count()) {
+        m_signatures.resize(id + 1);
+        return NULL;
+    } else {
+        return m_signatures[id];
+    }
+}
+
+void ApiTrace::addSignature(unsigned id, ApiTraceCallSignature *signature)
+{
+    m_signatures[id] = signature;
+}
+
+ApiTraceEnumSignature * ApiTrace::enumSignature(unsigned id)
+{
+    if (id >= m_enumSignatures.count()) {
+        m_enumSignatures.resize(id + 1);
+        return NULL;
+    } else {
+        return m_enumSignatures[id];
+    }
+}
+
+void ApiTrace::addEnumSignature(unsigned id, ApiTraceEnumSignature *signature)
+{
+    m_enumSignatures[id] = signature;
 }
 
 #include "apitrace.moc"

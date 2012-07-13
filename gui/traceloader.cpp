@@ -27,8 +27,6 @@ TraceLoader::TraceLoader(QObject *parent)
 TraceLoader::~TraceLoader()
 {
     m_parser.close();
-    qDeleteAll(m_signatures);
-    qDeleteAll(m_enumSignatures);
 }
 
 void TraceLoader::loadTrace(const QString &filename)
@@ -38,10 +36,11 @@ void TraceLoader::loadTrace(const QString &filename)
     }
 
     if (!m_frameBookmarks.isEmpty()) {
-        qDeleteAll(m_signatures);
-        qDeleteAll(m_enumSignatures);
-        m_signatures.clear();
-        m_enumSignatures.clear();
+        // XXX What to do here?
+        //qDeleteAll(m_signatures);
+        //qDeleteAll(m_enumSignatures);
+        //m_signatures.clear();
+        //m_enumSignatures.clear();
         m_frameBookmarks.clear();
         m_createdFrames.clear();
         m_parser.close();
@@ -221,37 +220,6 @@ void TraceLoader::parseTrace()
     if (frames.count()) {
         emit framesLoaded(frames);
     }
-}
-
-
-ApiTraceCallSignature * TraceLoader::signature(unsigned id)
-{
-    if (id >= m_signatures.count()) {
-        m_signatures.resize(id + 1);
-        return NULL;
-    } else {
-        return m_signatures[id];
-    }
-}
-
-void TraceLoader::addSignature(unsigned id, ApiTraceCallSignature *signature)
-{
-    m_signatures[id] = signature;
-}
-
-ApiTraceEnumSignature * TraceLoader::enumSignature(unsigned id)
-{
-    if (id >= m_enumSignatures.count()) {
-        m_enumSignatures.resize(id + 1);
-        return NULL;
-    } else {
-        return m_enumSignatures[id];
-    }
-}
-
-void TraceLoader::addEnumSignature(unsigned id, ApiTraceEnumSignature *signature)
-{
-    m_enumSignatures[id] = signature;
 }
 
 void TraceLoader::searchNext(const ApiTrace::SearchRequest &request)

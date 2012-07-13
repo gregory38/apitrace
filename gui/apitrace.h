@@ -51,6 +51,8 @@ public:
     ApiTrace();
     ~ApiTrace();
 
+    static ApiTrace* getInstance();
+
     bool isEmpty() const;
 
     QString fileName() const;
@@ -76,6 +78,12 @@ public:
     bool hasErrors() const;
 
     trace::API api() const;
+
+    ApiTraceCallSignature *signature(unsigned id);
+    void addSignature(unsigned id, ApiTraceCallSignature *signature);
+    ApiTraceEnumSignature *enumSignature(unsigned id);
+    void addEnumSignature(unsigned id, ApiTraceEnumSignature *signature);
+
 
 public slots:
     void setFileName(const QString &name);
@@ -141,6 +149,8 @@ private:
     int callInFrame(int callIdx) const;
     bool isFrameLoading(ApiTraceFrame *frame) const;
 private:
+    static ApiTrace* instance;
+
     QString m_fileName;
     QString m_tempFileName;
 
@@ -158,6 +168,9 @@ private:
     QSet<ApiTraceCall*> m_errors;
     QList< QPair<ApiTraceFrame*, ApiTraceError> > m_queuedErrors;
     QSet<ApiTraceFrame*> m_loadingFrames;
+
+    QVector<ApiTraceCallSignature*> m_signatures;
+    QVector<ApiTraceEnumSignature*> m_enumSignatures;
 };
 
 #endif

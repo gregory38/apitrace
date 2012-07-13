@@ -700,7 +700,7 @@ void MainWindow::initObjects()
     layout->addWidget(m_sourcesWidget);
     m_ui.shadersTab->setLayout(layout);
 
-    m_trace = new ApiTrace();
+    m_trace = ApiTrace::getInstance();
     m_retracer = new Retracer(this);
 
     m_vdataInterpreter = new VertexDataInterpreter(this);

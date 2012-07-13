@@ -18,7 +18,6 @@ class VariantVisitor : public trace::Visitor
 {
 public:
     VariantVisitor(TraceLoader *loader)
-        : m_loader(loader)
     {}
     virtual void visit(trace::Null *);
     virtual void visit(trace::Bool *node);
@@ -40,7 +39,6 @@ public:
         return m_variant;
     }
 private:
-    TraceLoader *m_loader;
     QVariant m_variant;
 };
 

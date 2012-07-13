@@ -17,13 +17,6 @@ public:
     TraceLoader(QObject *parent=0);
     ~TraceLoader();
 
-
-    ApiTraceCallSignature *signature(unsigned id);
-    void addSignature(unsigned id, ApiTraceCallSignature *signature);
-
-    ApiTraceEnumSignature *enumSignature(unsigned id);
-    void addEnumSignature(unsigned id, ApiTraceEnumSignature *signature);
-
 public slots:
     void loadTrace(const QString &filename);
     void loadFrame(ApiTraceFrame *frame);
@@ -90,9 +83,6 @@ private:
     QList<ApiTraceFrame*> m_createdFrames;
 
     QHash<QString, QUrl> m_helpHash;
-
-    QVector<ApiTraceCallSignature*> m_signatures;
-    QVector<ApiTraceEnumSignature*> m_enumSignatures;
 };
 
 #endif
