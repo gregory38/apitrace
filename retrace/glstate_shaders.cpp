@@ -144,21 +144,21 @@ dumpProgram(JSONWriter &json, GLint program)
     GLint attached_shaders = 0;
     glGetProgramiv(program, GL_ATTACHED_SHADERS, &attached_shaders);
     if (!attached_shaders) {
-		// Shaders were probably deleted try to get them from the cache instead.
-		if (!shaderCacheMap.count(program)) return;
+        // Shaders were probably deleted try to get them from the cache instead.
+        if (!shaderCacheMap.count(program)) return;
 
-		shaderMap = shaderCacheMap[program];
+        shaderMap = shaderCacheMap[program];
 
     } else {
-		GLuint *shaders = new GLuint[attached_shaders];
-		GLsizei count = 0;
-		glGetAttachedShaders(program, attached_shaders, &count, shaders);
-		std::sort(shaders, shaders + count);
-		for (GLsizei i = 0; i < count; ++ i) {
-			getShaderSource(shaderMap, shaders[i]);
-		}
-		delete [] shaders;
-	}
+        GLuint *shaders = new GLuint[attached_shaders];
+        GLsizei count = 0;
+        glGetAttachedShaders(program, attached_shaders, &count, shaders);
+        std::sort(shaders, shaders + count);
+        for (GLsizei i = 0; i < count; ++ i) {
+            getShaderSource(shaderMap, shaders[i]);
+        }
+        delete [] shaders;
+    }
 
     for (ShaderMap::const_iterator it = shaderMap.begin(); it != shaderMap.end(); ++it) {
         json.beginMember(it->first);
