@@ -449,6 +449,12 @@ enum {
      * Whether this call is verbose (i.e., not usually interesting).
      */
     CALL_FLAG_VERBOSE                  = (1 << 7),
+
+    /**
+     * Whether shader must be cached within this call
+     */
+    CALL_FLAG_CACHE_SHADER            = (1 << 8),
+
 };
 
 

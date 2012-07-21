@@ -157,6 +157,7 @@ callFlagTable[] = {
     { "glIsVertexArray",                               CALL_FLAG_NO_SIDE_EFFECTS | CALL_FLAG_VERBOSE },
     { "glIsVertexArrayAPPLE",                          CALL_FLAG_NO_SIDE_EFFECTS | CALL_FLAG_VERBOSE },
     { "glIsVertexAttribEnabledAPPLE",                  CALL_FLAG_NO_SIDE_EFFECTS | CALL_FLAG_VERBOSE },
+    { "glLinkProgram",                                 CALL_FLAG_CACHE_SHADER },
     { "glMultiDrawArrays",                             CALL_FLAG_RENDER },
     { "glMultiDrawArraysEXT",                          CALL_FLAG_RENDER },
     { "glMultiDrawElements",                           CALL_FLAG_RENDER },

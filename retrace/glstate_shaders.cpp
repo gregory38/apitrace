@@ -44,7 +44,9 @@ namespace glstate {
 // Mapping from shader type to shader source, used to accumulated the sources
 // of different shaders with same type.
 typedef std::map<std::string, std::string> ShaderMap;
+typedef std::map<GLint, ShaderMap> ShaderCacheMap;
 
+static ShaderCacheMap shaderCacheMap;
 
 static void
 getShaderSource(ShaderMap &shaderMap, GLuint shader)
@@ -111,9 +113,8 @@ getShaderObjSource(ShaderMap &shaderMap, GLhandleARB shaderObj)
     delete [] source;
 }
 
-
-static inline void
-dumpProgram(JSONWriter &json, GLint program)
+void
+cacheShaderSource(GLint program)
 {
     GLint attached_shaders = 0;
     glGetProgramiv(program, GL_ATTACHED_SHADERS, &attached_shaders);
@@ -131,6 +132,33 @@ dumpProgram(JSONWriter &json, GLint program)
         getShaderSource(shaderMap, shaders[i]);
     }
     delete [] shaders;
+
+	shaderCacheMap[program] = shaderMap;
+}
+
+static inline void
+dumpProgram(JSONWriter &json, GLint program)
+{
+    ShaderMap shaderMap;
+
+    GLint attached_shaders = 0;
+    glGetProgramiv(program, GL_ATTACHED_SHADERS, &attached_shaders);
+    if (!attached_shaders) {
+		// Shaders were probably deleted try to get them from the cache instead.
+		if (!shaderCacheMap.count(program)) return;
+
+		shaderMap = shaderCacheMap[program];
+
+    } else {
+		GLuint *shaders = new GLuint[attached_shaders];
+		GLsizei count = 0;
+		glGetAttachedShaders(program, attached_shaders, &count, shaders);
+		std::sort(shaders, shaders + count);
+		for (GLsizei i = 0; i < count; ++ i) {
+			getShaderSource(shaderMap, shaders[i]);
+		}
+		delete [] shaders;
+	}
 
     for (ShaderMap::const_iterator it = shaderMap.begin(); it != shaderMap.end(); ++it) {
         json.beginMember(it->first);

@@ -215,6 +215,9 @@ frameComplete(trace::Call &call);
 image::Image *
 getSnapshot(void);
 
+void
+cacheShader(uint program);
+
 bool
 dumpState(std::ostream &os);
 

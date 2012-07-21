@@ -125,6 +125,11 @@ retrace::getSnapshot(void) {
     return glstate::getDrawBufferImage();
 }
 
+void
+retrace::cacheShader(uint program) {
+	glstate::cacheShaderSource(program);
+	return;
+}
 
 bool
 retrace::dumpState(std::ostream &os)

@@ -47,6 +47,8 @@ void dumpCurrentContext(std::ostream &os);
 image::Image *
 getDrawBufferImage(void);
 
+void
+cacheShaderSource(GLint program);
 
 } /* namespace glstate */
 

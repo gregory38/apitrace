@@ -115,6 +115,16 @@ takeSnapshot(unsigned call_no) {
     return;
 }
 
+static void
+cacheShader(trace::Call *call) {
+	if (call->args.size() == 1) {
+		// glLinkProgram
+		cacheShader(call->arg(0).toUInt());
+	}
+
+	return;
+}
+
 
 static void
 mainLoop() {
@@ -150,6 +160,10 @@ mainLoop() {
         }
 
         retracer.retrace(*call);
+
+        if (dumpingState && call->flags & trace::CALL_FLAG_CACHE_SHADER) {
+            cacheShader(call);
+        }
 
         if (doSnapshot && !swapRenderTarget) {
             takeSnapshot(call->no);
